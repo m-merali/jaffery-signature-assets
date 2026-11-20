@@ -1,0 +1,24 @@
+# This repository is public. Only logos, icons and the pages that list them belong here.
+
+# Staff data and exports, in case one is saved here by mistake
+*.csv
+*.xlsx
+*.xls
+*.eml
+*.docx
+*.pdf
+
+# Certificates, keys and secrets
+*.pfx
+*.p12
+*.cer
+*.key
+*.pem
+.env
+.env.*
+*.secret
+*.secrets
+
+# Local tooling
+.DS_Store
+*.log
