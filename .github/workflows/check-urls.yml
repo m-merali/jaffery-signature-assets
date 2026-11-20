@@ -1,0 +1,23 @@
+# Run by hand from the Actions tab. Requests every asset on the primary and the
+# fallback address from a GitHub server, outside the school network, and writes the
+# report to the run's summary page.
+name: Check asset URLs
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Request every asset on both addresses
+        run: bash .github/scripts/check-urls.sh

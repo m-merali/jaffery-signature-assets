@@ -1,0 +1,49 @@
+# Publishes the repository to GitHub Pages on every push to main.
+# The same file runs in both repositories (primary and fallback); only the primary has
+# the custom domain, which is set in its Pages settings. GitHub ignores the CNAME file
+# when Pages is published by a workflow.
+# Based on GitHub's starter workflow pages/static.yml. Actions are pinned to commit SHAs.
+name: Publish to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Refuse changes to published files
+        run: sh .github/scripts/check-immutable.sh
+
+      - name: Upload site
+        # Leaves out .git, .github and other dot files.
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: .
+
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
