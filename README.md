@@ -51,7 +51,7 @@ git remote set-url --add --push origin https://github.com/m-merali/jaffery-signa
 git remote set-url --add --push origin https://github.com/m-merali/jaffery-signature-assets-fallback.git
 ```
 
-After that, `git push origin main` updates both. In each repository the push runs `.github/workflows/pages.yml`, which publishes the files with GitHub Pages.
+After that, `git push origin main` updates both. In each repository the push runs `.github/workflows/pages.yml`, which publishes the files with GitHub Pages. GitHub Pages sends `cache-control: max-age=600`, so a new file can take up to 10 minutes to show everywhere.
 
 The custom domain is set in the primary repository's Pages settings, not by the `CNAME` file: GitHub ignores that file when Pages is published by a workflow. The file records the domain and must contain only `assets.jafferyacademy.org`.
 
