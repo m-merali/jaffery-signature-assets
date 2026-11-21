@@ -2,7 +2,9 @@
 # The same file runs in both repositories (primary and fallback); only the primary has
 # the custom domain, which is set in its Pages settings. GitHub ignores the CNAME file
 # when Pages is published by a workflow.
-# Based on GitHub's starter workflow pages/static.yml. Actions are pinned to commit SHAs.
+# Based on GitHub's starter workflow pages/static.yml, with the deploy in its own job as
+# the actions/deploy-pages README recommends: deploying in the same job as the upload
+# failed with "no artifact found". Actions are pinned to commit SHAs.
 name: Publish to GitHub Pages
 
 on:
@@ -18,16 +20,11 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
     permissions:
       contents: read
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Check out
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -44,6 +41,17 @@ jobs:
         with:
           path: .
 
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
